@@ -34,7 +34,7 @@ jobs:
         cd models/research
         cp object_detection/packages/tf2/setup.py .
         pip install .
-        apt-get install protobuf-compiler
+        sudo apt-get install protobuf-compiler
         protoc object_detection/protos/*.proto --python_out=.
         pip install --user -r models/official/requirements.txt
         pip install tensorflow
