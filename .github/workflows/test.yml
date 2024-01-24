@@ -32,7 +32,7 @@ jobs:
         pip install boto3
         /usr/bin/git clone https://github.com/tensorflow/models.git
         cd models/research
-        cp /object_detection/packages/tf2/setup.py .
+        cp object_detection/packages/tf2/setup.py .
         pip install .
         protoc object_detection/protos/*.proto --python_out=.
         pip install --user -r models/official/requirements.txt
