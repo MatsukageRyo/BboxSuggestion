@@ -36,7 +36,7 @@ jobs:
         pip install .
         sudo apt-get install protobuf-compiler
         protoc object_detection/protos/*.proto --python_out=.
-        pip install --user -r models/official/requirements.txt
+        pip install --user -r requirements.txt
         pip install tensorflow
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
