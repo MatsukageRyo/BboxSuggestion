@@ -36,7 +36,7 @@ jobs:
         cp object_detection/packages/tf2/setup.py .
         pip install .
         sudo apt-get install protobuf-compiler
-        cd protos
+        cd object_detection/protos
         protoc *.proto --python_out=.
         
         pip install tensorflow
