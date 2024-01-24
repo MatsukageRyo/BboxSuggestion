@@ -31,12 +31,14 @@ jobs:
         pip install pytest
         pip install boto3
         /usr/bin/git clone https://github.com/tensorflow/models.git
+        pip install --user -r models/official/requirements.txt
         cd models/research
         cp object_detection/packages/tf2/setup.py .
         pip install .
         sudo apt-get install protobuf-compiler
-        protoc object_detection/protos/*.proto --python_out=.
-        pip install --user -r ../official/requirements.txt
+        cd protos
+        protoc *.proto --python_out=.
+        
         pip install tensorflow
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
