@@ -28,18 +28,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install -r official/requirements.txt
         pip install pytest
         pip install boto3
-        sudo apt-get update
-        sudo apt-get install -y git
-        git clone https://github.com/tensorflow/models.git
-        cd models
-        pip install --user -r official/requirements.txt
-        pip install tensorflow==2.15.0
-        cd research
-        export PYTHONPATH=$PYTHONPATH:pwd:pwd/slim
-        export PYTHONPATH=$PYTHONPATH:/home/runner/work/BboxSuggestion/BboxSuggestion/models:/home/runner/work/BboxSuggestion/BboxSuggestion/models/research
+        /usr/bin/git clone https://github.com/tensorflow/models.git
+        pip install --user -r models/official/requirements.txt
+
+        cd models/research
+        sudo apt-get install protobuf-compiler
+        protoc object_detection/protos/*.proto --python_out=.
+        cp object_detection/packages/tf2/setup.py .
+        pip install .
+        
+        pip install tensorflow
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:

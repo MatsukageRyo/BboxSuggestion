@@ -1,8 +1,6 @@
 import os,sys
 import numpy as np
 import tensorflow as tf
-sys.path.append('/home/runner/work/BboxSuggestion/BboxSuggestion/models')
-sys.path.append('/home/runner/work/BboxSuggestion/BboxSuggestion/models/research')
 from object_detection.utils import config_util
 from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
@@ -20,11 +18,11 @@ def inference(input_dir = 'images', output_dir = 'output',  ext = ['jpg', 'png',
     os.mkdir(output_dir)
 
     #EfficientDet D0チェックポイントをダウンロード
-    obj_det_path = '/worker/BboxSuggestion/research/object_detection'
-    if not os.path.isdir(f'{obj_det_path}/test_data/'):
+    obj_det_path = 'research/object_detection'
+    model_dir = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/checkpoint'
+    if not os.path.isdir(model_dir):
         utils.download_ckpt()
     pipeline_config = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/pipeline.config'
-    model_dir = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/checkpoint'
     if not os.path.isfile(pipeline_config): assert False
 
     # label_mapへのパス文字列を置換

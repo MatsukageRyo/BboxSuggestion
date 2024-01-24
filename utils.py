@@ -6,12 +6,12 @@ import numpy as np
 from object_detection.utils import label_map_util
 
 def download_ckpt():
-    os.system("rm /worker/BboxSuggestion/efficientdet_d0_coco17_tpu-32.tar.gz*")
-    os.system("rm -r /worker/BboxSuggestion/research/object_detection/test_data/*")
+    os.system("rm efficientdet_d0_coco17_tpu-32.tar.gz*")
+    os.system("rm -r research/object_detection/test_data/*")
     os.system("wget http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d0_coco17_tpu-32.tar.gz")
     os.system("tar -xf efficientdet_d0_coco17_tpu-32.tar.gz")
-    os.system("mkdir /worker/BboxSuggestion/research/object_detection/test_data")
-    os.system("mv  efficientdet_d0_coco17_tpu-32/ /worker/BboxSuggestion/research/object_detection/test_data/efficientdet_d0_coco17_tpu-32")
+    os.system("mkdir research/object_detection/test_data")
+    os.system("mv  efficientdet_d0_coco17_tpu-32/ research/object_detection/test_data/efficientdet_d0_coco17_tpu-32")
 
 def load_labelmap(configs, ):
     label_map_path = configs['eval_input_config'].label_map_path
