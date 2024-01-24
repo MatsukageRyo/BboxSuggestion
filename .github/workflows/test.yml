@@ -30,13 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install pytest
         pip install boto3
-        /usr/bin/git clone https://github.com/tensorflow/models.git
-        pip install --user -r models/official/requirements.txt
-        cd models/research
-        cp object_detection/packages/tf2/setup.py .
-        pip install .
-        sudo apt-get install protobuf-compiler
-        protoc object_detection/protos/*.proto --python_out=.
+        pip3 install tf-models-official
         
         pip install tensorflow
     - name: Configure AWS Credentials
