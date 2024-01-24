@@ -19,10 +19,10 @@ def inference(input_dir = 'images', output_dir = 'output',  ext = ['jpg', 'png',
 
     #EfficientDet D0チェックポイントをダウンロード
     obj_det_path = 'research/object_detection'
-    if not os.path.isdir(f'{obj_det_path}/test_data/'):
+    model_dir = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/checkpoint'
+    if not os.path.isdir(model_dir):
         utils.download_ckpt()
     pipeline_config = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/pipeline.config'
-    model_dir = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/checkpoint'
     if not os.path.isfile(pipeline_config): assert False
 
     # label_mapへのパス文字列を置換
