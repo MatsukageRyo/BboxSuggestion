@@ -18,7 +18,7 @@ def inference(input_dir = 'images', output_dir = 'output',  ext = ['jpg', 'png',
     os.mkdir(output_dir)
 
     #EfficientDet D0チェックポイントをダウンロード
-    obj_det_path = '/worker/BboxSuggestion/research/object_detection'
+    obj_det_path = 'research/object_detection'
     if not os.path.isdir(f'{obj_det_path}/test_data/'):
         utils.download_ckpt()
     pipeline_config = f'{obj_det_path}/test_data/efficientdet_d0_coco17_tpu-32/pipeline.config'
