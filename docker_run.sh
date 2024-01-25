@@ -1,1 +1,2 @@
-docker run -it --gpus all -p 8888:8888 -v /worker:/worker --name bbox_test matsukageryo/bbox_suggestion:latest python /home/exec.py 'sample-id'
+#!/bin/bash
+docker run --rm -it --gpus all --name bbox_test matsukageryo/bbox_suggestion:latest python /home/exec.py 'sample-id'

@@ -11,7 +11,7 @@ def mv_dir():
 def git_clone():
     if not os.path.isdir('/worker/BboxSuggestion'):
         print('git clone BboxSuggestion')
-        os.system('git clone git@github.com:MatsukageRyo/BboxSuggestion.git')
+        os.system('git -c core.sshCommand="ssh -i /home/ssh/github_key -F /dev/null" clone git@github.com:MatsukageRyo/BboxSuggestion.git')
     assert os.path.isdir('/worker/BboxSuggestion')
     os.chdir('/worker/BboxSuggestion')
 
