@@ -1,5 +1,12 @@
-from exec import main as exec_code
-
+import subprocess, os
 def test_exec_code():
-    assert exec_code('sample-id')
+    try:
+        cmd = ['bash', 'exec_code/mv_exec_code.sh']
+        subprocess.check_output(cmd)
+        assert os.path.isfile('/home/exec.py')
+
+        cmd = ['python', '/home/exec.py', 'sample-id']
+        subprocess.check_output(cmd)
+    except:
+        assert False
 

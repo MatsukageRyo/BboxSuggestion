@@ -1,8 +1,5 @@
 import os, sys
-from main import main as BboxSuggestion
-from s3.s3_utils import s3_utils
-
-s3 = s3_utils('bounding-box-suggestion')
+s3 = None
 
 def mv_dir():
     if not os.path.isdir('/worker'):
@@ -33,6 +30,12 @@ def check_output(user_id:str):
 def main(user_id:str = 'sample-id'):
     mv_dir()
     git_clone()
+
+    sys.path.append('/worker/BboxSuggestion')
+    from main import main as BboxSuggestion
+    from s3.s3_utils import s3_utils
+    global s3
+    s3 = s3_utils('bounding-box-suggestion')
 
     # check input
     if not check_input(user_id): return False
