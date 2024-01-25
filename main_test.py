@@ -4,13 +4,14 @@ import os
 
 def test_main():
     user_id:str = 'sample-id'
-    s3 = s3_utils('bounding-box-suggestion')
+    bucket_name:str = 'bounding-box-suggestion'
+    s3 = s3_utils(bucket_name)
 
     # clear output on s3
     if s3.check_uploaded_file('output.zip', f'{user_id}/output/'): s3.del_file('output.zip', f'{user_id}/output/')
 
     # inference
-    main(user_id)
+    main(user_id, bucket_name)
 
     # clear output on local
     assert os.path.isfile('output.zip')
