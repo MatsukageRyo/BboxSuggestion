@@ -27,7 +27,7 @@ def check_output(user_id:str):
         return False
     return True
 
-def main(user_id:str = 'sample-id'):
+def main(user_id:str = 'sample-id', bucket_name:str = 'bounding-box-suggestion'):
     mv_dir()
     git_clone()
 
@@ -35,7 +35,7 @@ def main(user_id:str = 'sample-id'):
     from main import main as BboxSuggestion
     from s3.s3_utils import s3_utils
     global s3
-    s3 = s3_utils('bounding-box-suggestion')
+    s3 = s3_utils(bucket_name)
 
     # check input
     if not check_input(user_id): return False
@@ -54,4 +54,12 @@ def main(user_id:str = 'sample-id'):
     return True
 
 if __name__ == '__main__':
-    main(sys.argv[1])
+    print(f'sys.argv: {sys.argv}')
+    if len(sys.argv) == 1:
+        main()
+    elif len(sys.argv) == 2:
+        main(sys.argv[1])
+    elif len(sys.argv) == 3:
+        main(sys.argv[1], sys.argv[2])
+    else:
+        assert False
