@@ -15,9 +15,12 @@ class s3_utils:
     def exist_bucket(self):
         name_list = [b.name for b in self.s3_resource.buckets.all()]
         print('[DEBUG] bucket_name_list:', name_list)
+        print(f'[DEBUG] bucket_name:[START]{self.bucket_name}[END]')
         if self.bucket_name in name_list:
+            print(f'[DEBUG] Bucket {self.bucket_name} exists')
             return True
         else:
+            print(f'[DEBUG] Bucket {self.bucket_name} does not exist')
             return False
     
     # Check if the directory on S3 exists
