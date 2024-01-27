@@ -48,3 +48,7 @@ def test_s3_utils():
     print('Success')
     os.remove(test_file_name)
     os.remove(new_file_name2)
+
+if __name__ == "__main__":
+    # Test
+    test_s3_utils()
