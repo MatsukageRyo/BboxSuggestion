@@ -11,7 +11,9 @@ def test_exec_code():
             subprocess.check_output(cmd)
             assert os.path.isfile('/home/exec.py')
 
-        cmd = ['python', '/home/exec.py', 'sample-id', bucket_name]
+            cmd = ['python', '/home/exec.py', 'sample-id', bucket_name]
+        else:
+            cmd = ['python', 'exec_code/exec.py', 'sample-id', bucket_name]
         subprocess.check_output(cmd)
     except:
         assert False
