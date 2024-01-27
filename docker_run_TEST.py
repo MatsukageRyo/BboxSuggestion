@@ -1,8 +1,9 @@
 from s3.s3_utils import s3_utils
 import subprocess, os, shutil
 def test_docker_run():
+    bucket_name = 'bounding-box-suggestion-test'
     user_id = 'sample-id'
-    s3 = s3_utils('bounding-box-suggestion')
+    s3 = s3_utils(bucket_name)
 
     # clear output on s3
     if s3.check_uploaded_file('output.zip', f'{user_id}/output/'):
