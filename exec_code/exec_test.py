@@ -4,7 +4,7 @@ def test_exec_code():
         bucket_name = 'bounding-box-suggestion-test'
         
         is_github_actions = os.path.isdir('/home/runner/')
-        if not is_github_actions
+        if not is_github_actions:
             if os.path.isfile('/home/exec.py'): os.remove('/home/exec.py')
             assert not os.path.isfile('/home/exec.py')
             cmd = ['bash', 'exec_code/mv_exec_code.sh']
