@@ -27,7 +27,7 @@ def check_output(user_id:str):
         return False
     return True
 
-def main(user_id:str = 'sample-id', bucket_name:str = 'bounding-box-suggestion'):
+def main(user_id:str, bucket_name:str):
     mv_dir()
     git_clone()
 

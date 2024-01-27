@@ -122,7 +122,7 @@ def upload_output(output_path:str, s3, user_id:str, output_dir:str):
     s3.upload_file('output.zip', f'{user_id}/output/')
     assert s3.check_uploaded_file('output.zip', f'{user_id}/output/')
 
-def main(user_id:str = 'sample-id', bucket_name:str = 'bounding-box-suggestion'):
+def main(user_id:str, bucket_name:str):
     # download input images
     s3 = s3_utils(bucket_name)
     input_dir:str = download_input_imags(s3, user_id)
@@ -140,6 +140,9 @@ def main(user_id:str = 'sample-id', bucket_name:str = 'bounding-box-suggestion')
 
 
 if __name__ == '__main__':
-    main()
+    assert len(sys.argv) == 3
+    user_id:str = sys.argv[1]
+    bucket_name:str = sys.argv[2]
+    main(user_id, bucket_name)
 
 
