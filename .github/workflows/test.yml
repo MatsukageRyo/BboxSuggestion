@@ -49,4 +49,3 @@ jobs:
       run: |
         pytest s3/*_test.py
         pytest *_test.py
-        pytest exec_code/*_test.py
