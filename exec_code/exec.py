@@ -35,6 +35,7 @@ def main(user_id:str, bucket_name:str):
     from main import main as BboxSuggestion
     from s3.s3_utils import s3_utils
     global s3
+    print(f'[DEBUG in exec.py] bucket_name: {bucket_name}')
     s3 = s3_utils(bucket_name)
 
     # check input
