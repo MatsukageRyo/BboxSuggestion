@@ -14,6 +14,7 @@ class s3_utils:
     # Check if the bucket on S3 exists
     def exist_bucket(self):
         name_list = [b.name for b in self.s3_resource.buckets.all()]
+        print('[DEBUG] bucket_name_list:', name_list)
         if self.bucket_name in name_list:
             return True
         else:
