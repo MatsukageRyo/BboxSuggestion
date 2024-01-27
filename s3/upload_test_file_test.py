@@ -1,6 +1,7 @@
 import s3_utils
 
-def test_upload_test_file(bucket_name):
+def test_upload_test_file():
+    bucket_name = 'bounding-box-suggestion-test'
     # Test
     s3 = s3_utils.s3_utils(bucket_name)
     assert s3.exist_dir('sample-id/')
@@ -27,4 +28,4 @@ if __name__ == "__main__":
     s3.upload_file('s3/images.zip', 'sample-id/input/')
 
     # Test
-    test_upload_test_file(bucket_name)
+    test_upload_test_file()
