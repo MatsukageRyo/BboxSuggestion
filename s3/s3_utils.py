@@ -17,10 +17,8 @@ class s3_utils:
         print('[DEBUG] bucket_name_list:', name_list)
         print(f'[DEBUG] bucket_name:[START]{self.bucket_name}[END]')
         if self.bucket_name in name_list:
-            print(f'[DEBUG] Bucket {self.bucket_name} exists')
             return True
         else:
-            print(f'[DEBUG] Bucket {self.bucket_name} does not exist')
             return False
     
     # Check if the directory on S3 exists
@@ -82,7 +80,7 @@ class s3_utils:
             self.mk_dir(dir)
         fname = os.path.basename(file_name)
         self.s3_resource.Object(self.bucket_name, dir+fname).upload_file(file_name)
-        assert self.check_uploaded_file(file_name, dir)
+        assert self.check_uploaded_file(fname, dir)
         print(f'Uploaded {file_name} to {dir}')
 
     

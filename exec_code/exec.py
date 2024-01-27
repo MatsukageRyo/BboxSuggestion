@@ -45,7 +45,7 @@ def main(user_id:str = 'sample-id', bucket_name:str = 'bounding-box-suggestion')
         s3.del_file('output.zip', f'{user_id}/output/')
 
     # inference
-    BboxSuggestion(user_id)
+    BboxSuggestion(user_id, bucket_name)
 
     # check output
     if not check_output(user_id): return False

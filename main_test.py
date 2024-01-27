@@ -4,7 +4,7 @@ import os
 
 def test_main():
     user_id:str = 'sample-id'
-    bucket_name:str = 'bounding-box-suggestion'
+    bucket_name:str = 'bounding-box-suggestion-test'
     s3 = s3_utils(bucket_name)
 
     # clear output on s3
