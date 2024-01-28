@@ -21,7 +21,6 @@ class s3_utils:
             return True
         else:
             return False
-    
 
     # Create a bucket on S3
     def mk_bucket(self, bucket_name):
@@ -72,6 +71,7 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
+
         self.s3_resource.Object(self.bucket_name, dir+file_name).download_file(file_name)
         assert self.check_downloaded_file(file_name)
         print(f'Downloaded {file_name} from {dir}')
