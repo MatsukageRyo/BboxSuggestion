@@ -28,7 +28,9 @@ class s3_utils:
         try:
             self.s3_clinet.head_object(Bucket=self.bucket_name, Key=dir)
             return True
-        except ClientError:
+        except ClientError as e:
+            print(e)
+            print(type(e))
             return False
 
     # Create a bucket on S3
