@@ -86,9 +86,9 @@ class s3_utils:
     
     # Check uploaded file
     def check_uploaded_file(self, file_name, dir=''):
-        print('file_name:',file_name)
-        print('dir:',dir)
         if not self.exist_bucket():
+            print('[DEBUG upload_file()] file_name:',file_name)
+            print('[DEBUG upload_file()] dir:',dir)
             print('Not exitst bucket')
             assert False
         bucket = self.s3_resource.Bucket(self.bucket_name)
@@ -103,6 +103,7 @@ class s3_utils:
             print('Not exitst bucket')
             assert False
         if not self.exist_dir(dir):
+            print('[DEBUG download_file()] dir:',dir)
             print('Not exitst dir')
             assert False
         self.s3_resource.Object(self.bucket_name, dir+file_name).download_file(file_name)
