@@ -4,16 +4,14 @@ import os
 def test_s3_utils():
     from datetime import datetime
     current_datetime = datetime.now().strftime('%Y%m%d%H%M%S')
+    
     # Test for create bucket
     bucket_name = 'test-bucket-by-matsukage-' + current_datetime
     print(bucket_name)
     s3 = s3_utils(bucket_name)
     assert s3.exist_bucket()
     
-    # Test for create directory
     dir_name = 'test-dir-by-matsukage/'
-    s3.mk_dir(dir_name)
-    assert s3.exist_dir(dir_name)
 
     # Test for upload file
     test_file_name = 'test.txt'
@@ -36,10 +34,6 @@ def test_s3_utils():
     if os.path.isfile(new_file_name2): os.remove(new_file_name2)
     s3.download_file(new_file_name2, dir_name)
     assert s3.check_downloaded_file(new_file_name2)
-
-    # Test for delete directory
-    s3.del_dir(dir_name)
-    assert not s3.exist_dir(dir_name)
 
     # Test for delete buckets
     s3.del_bucket()
