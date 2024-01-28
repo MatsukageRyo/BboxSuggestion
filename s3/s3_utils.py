@@ -1,4 +1,5 @@
 import boto3, os
+from botocore.errorfactory import ClientError
 
 # s3リソースへアクセスするためのクラス
 class s3_utils:
@@ -21,15 +22,6 @@ class s3_utils:
         else:
             return False
     
-    # Check if the directory on S3 exists
-    def exist_dir(self, dir):
-        from botocore.errorfactory import ClientError
-        if not dir.endswith('/'): dir = dir + '/'
-        try:
-            self.s3_clinet.head_object(Bucket=self.bucket_name, Key=dir)
-            return True
-        except ClientError:
-            return False
 
     # Create a bucket on S3
     def mk_bucket(self, bucket_name):
@@ -41,26 +33,6 @@ class s3_utils:
         )
         assert self.exist_bucket()
         print(f'Created {bucket_name}')
-
-    # Create a directory on S3
-    def mk_dir(self, dir):
-        if not self.exist_bucket():
-            print('Not exitst bucket')
-            assert False
-        if not self.exist_dir(dir):
-            self.s3_clinet.put_object(Bucket=self.bucket_name, Key=dir)
-        assert self.exist_dir(dir)
-        print(f'Created {dir}')
-
-    # Delete a directory on S3
-    def del_dir(self, dir):
-        if not self.exist_bucket(): return
-        if self.exist_dir(dir):
-            bucket = self.s3_resource.Bucket(self.bucket_name)
-            if not dir.endswith('/'): dir += '/'
-            bucket.objects.filter(Prefix=dir).delete()
-        assert not self.exist_dir(dir)
-        print(f'Deleted {dir}')
 
     # Delete all objects in the bucket and the bucket itself
     def del_bucket(self):
@@ -76,8 +48,6 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        if not self.exist_dir(dir):
-            self.mk_dir(dir)
         fname = os.path.basename(file_name)
         self.s3_resource.Object(self.bucket_name, dir+fname).upload_file(file_name)
         assert self.check_uploaded_file(fname, dir)
@@ -100,9 +70,6 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        if not self.exist_dir(dir):
-            print('Not exitst dir')
-            assert False
         self.s3_resource.Object(self.bucket_name, dir+file_name).download_file(file_name)
         assert self.check_downloaded_file(file_name)
         print(f'Downloaded {file_name} from {dir}')
@@ -115,9 +82,6 @@ class s3_utils:
     def del_file(self, file_name, dir=''):
         if not self.exist_bucket():
             print('Not exitst bucket')
-            assert False
-        if not self.exist_dir(dir):
-            print('Not exitst dir')
             assert False
         self.s3_clinet.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
         assert not self.check_uploaded_file(file_name, dir)
@@ -139,9 +103,6 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        if not self.exist_dir(dir):
-            print('Not exitst dir')
-            assert False
         self.s3_clinet.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
         assert not self.check_uploaded_file(file_name, dir)
         print(f'Deleted {file_name} from {dir}')
@@ -156,10 +117,7 @@ def test_s3_utils():
     s3 = s3_utils(bucket_name)
     assert s3.exist_bucket()
     
-    # Test for create directory
     dir_name = 'test-dir-by-matsukage/'
-    s3.mk_dir(dir_name)
-    assert s3.exist_dir(dir_name)
 
     # Test for upload file
     test_file_name = 'test.txt'
@@ -182,10 +140,6 @@ def test_s3_utils():
     if os.path.isfile(new_file_name2): os.remove(new_file_name2)
     s3.download_file(new_file_name2, dir_name)
     assert s3.check_downloaded_file(new_file_name2)
-
-    # Test for delete directory
-    s3.del_dir(dir_name)
-    assert not s3.exist_dir(dir_name)
 
     # Test for delete buckets
     s3.del_bucket()

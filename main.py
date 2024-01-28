@@ -115,7 +115,6 @@ def download_input_imags(s3, user_id:str)->str:
 def upload_output(output_path:str, s3, user_id:str, output_dir:str):
     # zip output
     os.system('zip -r output.zip output')
-    assert s3.exist_dir(f'{user_id}/output/')
 
     # upload output.zip
     if s3.check_uploaded_file('output.zip', f'{user_id}/output/'): s3.del_file('output.zip', f'{user_id}/output/')
