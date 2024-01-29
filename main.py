@@ -95,7 +95,9 @@ def inference(input_dir = 'images', output_dir = 'output',  ext = ['jpg', 'png',
 
         cv2.cvtColor(image_np_with_detections, cv2.COLOR_BGR2RGB, image_np_with_detections)
         output_name = os.path.basename(image_path)
-        cv2.imwrite(f'{output_dir}/{output_name}', image_np_with_detections)
+        output_path = f'{output_dir}/{output_name}'
+        cv2.imwrite(output_path, image_np_with_detections)
+        print(f'output: {output_path}')
 
 def download_input_imags(s3, user_id:str)->str:
     # images.zipの存在確認

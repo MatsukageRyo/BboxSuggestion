@@ -30,5 +30,7 @@ def test_main():
     # unzip
     os.system('unzip -o output.zip')
     assert os.path.isdir('output')
-    assert os.path.isfile('output/human.jpeg')
+    assert os.path.isfile('output/person1.jpeg')
     assert os.path.isfile('output/dog.jpeg')
+    assert os.path.isfile('output/person2.png')
+    assert os.path.isfile('output/dog2.bmp')
