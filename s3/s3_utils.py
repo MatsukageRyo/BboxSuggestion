@@ -15,8 +15,6 @@ class s3_utils:
     # Check if the bucket on S3 exists
     def exist_bucket(self):
         name_list = [b.name for b in self.s3_resource.buckets.all()]
-        print('[DEBUG] bucket_name_list:', name_list)
-        print(f'[DEBUG] bucket_name:[START]{self.bucket_name}[END]')
         if self.bucket_name in name_list:
             return True
         else:
@@ -56,8 +54,6 @@ class s3_utils:
     # Check uploaded file
     def check_uploaded_file(self, file_name, dir=''):
         if not self.exist_bucket():
-            print('[DEBUG upload_file()] file_name:',file_name)
-            print('[DEBUG upload_file()] dir:',dir)
             print('Not exitst bucket')
             assert False
         bucket = self.s3_resource.Bucket(self.bucket_name)
