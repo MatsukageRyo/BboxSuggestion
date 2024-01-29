@@ -102,10 +102,11 @@ class s3_utils:
             assert False
         if not key.endswith('/'): dir += '/'
         bucket = self.s3_resource.Bucket(self.bucket_name)
-        
+
         result = []
         for obj in bucket.objects.filter(Prefix=key):
             obj_name = obj.key.split('/')[-1]
+            if obj_name == '': continue
             print(obj_name)
             result.append(obj_name)
         return result

@@ -6,6 +6,7 @@ setup.py
 *.jpg
 *.jpeg
 images.zip
+images2.zip
 output.zip
 *.png
 *.bmp
