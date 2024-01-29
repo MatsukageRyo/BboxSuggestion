@@ -95,6 +95,21 @@ class s3_utils:
         dir = '/'.join(new_file_key.split('/')[:-1])
         assert self.check_uploaded_file(new_file_name, dir)
         print(f'Copied {src_file_key} to {new_file_name} in {dir}')
+    
+    def listup_files(self, key=''):
+        if not self.exist_bucket():
+            print('Not exitst bucket')
+            assert False
+        if not key.endswith('/'): dir += '/'
+        bucket = self.s3_resource.Bucket(self.bucket_name)
+
+        result = []
+        for obj in bucket.objects.filter(Prefix=key):
+            obj_name = obj.key.split('/')[-1]
+            if obj_name == '': continue
+            print(obj_name)
+            result.append(obj_name)
+        return result
 
     # delete a file on S3
     def del_file(self, file_name, dir=''):

@@ -100,19 +100,40 @@ def inference(input_dir = 'images', output_dir = 'output',  ext = ['jpg', 'png',
         print(f'output: {output_path}')
 
 def download_input_imags(s3, user_id:str)->str:
-    # images.zipの存在確認
-    if os.path.isdir('images'): shutil.rmtree('images')
-    assert s3.check_uploaded_file('images.zip', f'{user_id}/input/')
+    input_dir = 'images_all'
+    # clear images dir
+    if os.path.isdir(input_dir): shutil.rmtree(input_dir)
+    if os.path.isdir('tmp'): shutil.rmtree('tmp')
 
-    # download
-    s3.download_file('images.zip', f'{user_id}/input/')
-    os.path.isfile('images.zip')
+    # listup input files
+    input_zips = s3.listup_files(f'{user_id}/input/')
+    assert len(input_zips) > 0
 
-    # unzip
-    os.system('unzip -o images.zip')
-    assert os.path.isdir('images')
+    # download input files
+    for input_zip in input_zips:
+        if not os.path.basename(input_zip).split('.')[1] == 'zip': continue
 
-    return 'images'
+        # donwload
+        s3.check_uploaded_file(input_zip, f'{user_id}/input/')
+        s3.download_file(input_zip, f'{user_id}/input/')
+        assert s3.check_downloaded_file(input_zip)
+
+        # unzip
+        os.system(f'unzip -o {input_zip} -d tmp')
+
+        # remove input_zip
+        os.system(f'rm -rf input.zip')
+
+    # move files to images_all
+    os.mkdir(input_dir)
+    file_list = glob.glob('tmp/*/*.jpg') + glob.glob('tmp/*/*.png') + glob.glob('tmp/*/*.bmp') + glob.glob('tmp/*/*.jpeg')
+    for file in file_list:
+        shutil.move(file, input_dir)
+    
+    # remove tmp
+    os.system(f'rm -rf tmp')
+
+    return input_dir
 
 def upload_output(output_path:str, s3, user_id:str, output_dir:str):
     # zip output
