@@ -17,10 +17,18 @@ def git_clone():
     os.system('git -c core.sshCommand="ssh -i /home/ssh/github_key -F /dev/null" pull')
 
 def check_input(user_id:str):
-    if not s3.check_uploaded_file('images.zip', f'{user_id}/input/'):
-        print('images.zip is not uploaded')
+    # listup input files
+    input_zips = s3.listup_files(f'{user_id}/input/')
+    if len(input_zips) < 1:
+        print('file is not uploaded')
         return False
-    return True
+
+    # check input files
+    for input_zip in input_zips:
+        if os.path.basename(input_zip).split('.')[1] == 'zip':
+            return True 
+    print('zip is not uploaded')
+    return False
 
 def check_output(user_id:str):
     if not s3.check_uploaded_file('output.zip', f'{user_id}/output/'):
