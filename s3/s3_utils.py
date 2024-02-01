@@ -54,7 +54,7 @@ class s3_utils:
         assert self.check_uploaded_file(fname, key)
         print(f'Uploaded {file_name} to {key}')
     
-    def __upload_file_multipart(self, file_name, key=''): # part_size: 50MB
+    def __upload_file_multipart(self, file_name, key=''):
         fname = os.path.basename(file_name)
         if not key.endswith('/'): key += '/'
         cmd = ['aws','s3','cp',file_name,f's3://{self.bucket_name}/{key}']
