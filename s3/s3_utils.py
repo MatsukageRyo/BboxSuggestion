@@ -1,12 +1,9 @@
 import boto3, os
-from botocore.errorfactory import ClientError
-from botocore.config import Config
-
+import subprocess
 # s3リソースへアクセスするためのクラス
 class s3_utils:
     s3_resource = boto3.resource('s3', region_name="ap-northeast-1")
-    v4_config = Config(region_name="ap-northeast-1", signature_version="s3v4")
-    s3_client = boto3.client('s3', config = v4_config)
+    s3_client = boto3.client('s3')
     bucket_name=""
 
     def __init__(self, bucket_name):
@@ -43,7 +40,7 @@ class s3_utils:
         print(f'Deleted {self.bucket_name}')
     
     # Upload a file to S3
-    def upload_file(self, file_name, key='', multipart=False):
+    def upload_file(self, file_name, key='', multipart=True):
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
@@ -57,42 +54,11 @@ class s3_utils:
         assert self.check_uploaded_file(fname, key)
         print(f'Uploaded {file_name} to {key}')
     
-    def __generate_multipart_upload_id(self, bucket_name, key):
-        try:
-            response = self.s3_client.create_multipart_upload(
-                Bucket=bucket_name,
-                Key=key,
-                ContentType='multipart/form-data'
-            )
-
-        except ClientError as e:
-            print(e)
-            return None
-
-        return response["UploadId"]
-
-    
-    def __upload_file_multipart(self, file_name, key='', part_size=1024*1024*50): # part_size: 50MB
+    def __upload_file_multipart(self, file_name, key=''): # part_size: 50MB
         fname = os.path.basename(file_name)
-        upload_id = self.__generate_multipart_upload_id(self.bucket_name, key+fname)
-        multipart_upload = self.s3_resource.MultipartUpload(self.bucket_name, key+fname, upload_id)
-
-        file_size = os.path.getsize(file_name)
-        part_count = file_size // part_size
-
-        if file_size % part_size != 0:
-            part_count += 1
-
-        parts = []
-        for i in range(part_count):
-            part_start = part_size * i
-            part_end = min(part_start + part_size, file_size)
-            part_data = open(file_name, 'rb').read()[part_start:part_end]
-            part = multipart_upload.Part(i+1)
-            response = part.upload(Body=part_data)
-            parts.append({"PartNumber": i+1, "ETag": response["ETag"]})
-
-        multipart_upload.complete(MultipartUpload={"Parts": parts})
+        if not key.endswith('/'): key += '/'
+        cmd = ['aws','s3','cp',file_name,f's3://{self.bucket_name}/{key}','--quiet']
+        subprocess.check_output(cmd)
 
     
     # Check uploaded file
@@ -106,15 +72,23 @@ class s3_utils:
             return True
         return False
     
+    def __download_file_multipart(self, file_name, key=''):
+        fname = os.path.basename(file_name)
+        if not key.endswith('/'): key += '/'
+        cmd = ['aws','s3','cp',f's3://{self.bucket_name}/{key}{fname}',file_name,'--quiet']
+        subprocess.check_output(cmd)
+    
     # Download a file from S3
-    def download_file(self, file_name, dir=''):
+    def download_file(self, file_name, key='', multipart=True):
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-
-        self.s3_resource.Object(self.bucket_name, dir+file_name).download_file(file_name)
+        if multipart:
+            self.__download_file_multipart(file_name, key)
+        else:
+            self.s3_resource.Object(self.bucket_name, key+file_name).download_file(file_name)
         assert self.check_downloaded_file(file_name)
-        print(f'Downloaded {file_name} from {dir}')
+        print(f'Downloaded {file_name} from {key}')
     
     # Check downloaded file
     def check_downloaded_file(self, file_name):
