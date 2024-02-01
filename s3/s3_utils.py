@@ -57,7 +57,7 @@ class s3_utils:
     def __upload_file_multipart(self, file_name, key=''): # part_size: 50MB
         fname = os.path.basename(file_name)
         if not key.endswith('/'): key += '/'
-        cmd = ['aws','s3','cp',file_name,f's3://{self.bucket_name}/{key}','--quiet']
+        cmd = ['aws','s3','cp',file_name,f's3://{self.bucket_name}/{key}']
         subprocess.check_output(cmd)
 
     
@@ -75,7 +75,7 @@ class s3_utils:
     def __download_file_multipart(self, file_name, key=''):
         fname = os.path.basename(file_name)
         if not key.endswith('/'): key += '/'
-        cmd = ['aws','s3','cp',f's3://{self.bucket_name}/{key}{fname}',file_name,'--quiet']
+        cmd = ['aws','s3','cp',f's3://{self.bucket_name}/{key}{fname}',file_name]
         subprocess.check_output(cmd)
     
     # Download a file from S3
