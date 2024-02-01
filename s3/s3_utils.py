@@ -1,10 +1,12 @@
 import boto3, os
 from botocore.errorfactory import ClientError
+from botocore.config import Config
 
 # s3リソースへアクセスするためのクラス
 class s3_utils:
     s3_resource = boto3.resource('s3', region_name="ap-northeast-1")
-    s3_clinet = boto3.client('s3')
+    v4_config = Config(region_name="ap-northeast-1", signature_version="s3v4")
+    s3_client = boto3.client('s3', config = v4_config)
     bucket_name=""
 
     def __init__(self, bucket_name):
@@ -36,19 +38,62 @@ class s3_utils:
         if not self.exist_bucket(): return
         bucket = self.s3_resource.Bucket(self.bucket_name)
         bucket.object_versions.delete()
-        self.s3_clinet.delete_bucket(Bucket=self.bucket_name)
+        self.s3_client.delete_bucket(Bucket=self.bucket_name)
         assert not self.exist_bucket()
         print(f'Deleted {self.bucket_name}')
     
     # Upload a file to S3
-    def upload_file(self, file_name, dir=''):
+    def upload_file(self, file_name, key='', multipart=True):
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
+        
         fname = os.path.basename(file_name)
-        self.s3_resource.Object(self.bucket_name, dir+fname).upload_file(file_name)
-        assert self.check_uploaded_file(fname, dir)
-        print(f'Uploaded {file_name} to {dir}')
+        if multipart:
+            self.__upload_file_multipart(file_name, key)
+        else:
+            self.s3_resource.Object(self.bucket_name, key+fname).upload_file(file_name)
+        
+        assert self.check_uploaded_file(fname, key)
+        print(f'Uploaded {file_name} to {key}')
+    
+    def __generate_multipart_upload_id(self, bucket_name, key):
+        try:
+            response = self.s3_client.create_multipart_upload(
+                Bucket=bucket_name,
+                Key=key,
+                ContentType='multipart/form-data'
+            )
+
+        except ClientError as e:
+            print(e)
+            return None
+
+        return response["UploadId"]
+
+    
+    def __upload_file_multipart(self, file_name, key='', part_size=1024*1024*50): # part_size: 50MB
+        fname = os.path.basename(file_name)
+        upload_id = self.__generate_multipart_upload_id(self.bucket_name, key+fname)
+        print(f"[DEBUG] upload_id:{upload_id}")
+        multipart_upload = self.s3_resource.MultipartUpload(self.bucket_name, key+fname, upload_id)
+
+        file_size = os.path.getsize(file_name)
+        part_count = file_size // part_size
+
+        if file_size % part_size != 0:
+            part_count += 1
+
+        parts = []
+        for i in range(part_count):
+            part_start = part_size * i
+            part_end = min(part_start + part_size, file_size)
+            part_data = open(file_name, 'rb').read()[part_start:part_end]
+            part = multipart_upload.Part(i+1)
+            response = part.upload(Body=part_data)
+            parts.append({"PartNumber": i+1, "ETag": response["ETag"]})
+
+        multipart_upload.complete(MultipartUpload={"Parts": parts})
 
     
     # Check uploaded file
@@ -81,7 +126,7 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        self.s3_clinet.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
+        self.s3_client.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
         assert not self.check_uploaded_file(file_name, dir)
         print(f'Deleted {file_name} from {dir}')
     
@@ -90,7 +135,7 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        self.s3_clinet.copy_object(Bucket=self.bucket_name, CopySource=self.bucket_name+'/'+src_file_key, Key=new_file_key)
+        self.s3_client.copy_object(Bucket=self.bucket_name, CopySource=self.bucket_name+'/'+src_file_key, Key=new_file_key)
         new_file_name = new_file_key.split('/')[-1]
         dir = '/'.join(new_file_key.split('/')[:-1])
         assert self.check_uploaded_file(new_file_name, dir)
@@ -116,7 +161,7 @@ class s3_utils:
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
-        self.s3_clinet.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
+        self.s3_client.delete_object(Bucket=self.bucket_name, Key=dir+file_name)
         assert not self.check_uploaded_file(file_name, dir)
         print(f'Deleted {file_name} from {dir}')
 
