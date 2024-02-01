@@ -75,7 +75,6 @@ class s3_utils:
     def __upload_file_multipart(self, file_name, key='', part_size=1024*1024*50): # part_size: 50MB
         fname = os.path.basename(file_name)
         upload_id = self.__generate_multipart_upload_id(self.bucket_name, key+fname)
-        print(f"[DEBUG] upload_id:{upload_id}")
         multipart_upload = self.s3_resource.MultipartUpload(self.bucket_name, key+fname, upload_id)
 
         file_size = os.path.getsize(file_name)
