@@ -43,7 +43,7 @@ class s3_utils:
         print(f'Deleted {self.bucket_name}')
     
     # Upload a file to S3
-    def upload_file(self, file_name, key='', multipart=True):
+    def upload_file(self, file_name, key='', multipart=False):
         if not self.exist_bucket():
             print('Not exitst bucket')
             assert False
