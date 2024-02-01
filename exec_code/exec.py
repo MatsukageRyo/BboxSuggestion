@@ -14,6 +14,7 @@ def git_clone():
         os.system('git -c core.sshCommand="ssh -i /home/ssh/github_key -F /dev/null" clone git@github.com:MatsukageRyo/BboxSuggestion.git')
     assert os.path.isdir('/worker/BboxSuggestion')
     os.chdir('/worker/BboxSuggestion')
+    os.system('git -c core.sshCommand="ssh -i /home/ssh/github_key -F /dev/null" pull')
 
 def check_input(user_id:str):
     # listup input files
